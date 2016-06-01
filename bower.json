@@ -1,0 +1,25 @@
+{
+  "name": "netgenes-angular-uploader",
+  "description": "Uploader service for angular.js",
+  "main": "src/netgenes-angular-uploader.js",
+  "authors": [
+    "Jacek Chudziński"
+  ],
+  "license": "BSD-2-Clause",
+  "keywords": [
+    "angular",
+    "angular.js",
+    "uploader",
+    "upload",
+    "multiple-files-upload"
+  ],
+  "homepage": "https://github.com/jatzek/netgenes-angular-uploader",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
