@@ -1,6 +1,6 @@
 {
   "name": "netgenes-angular-uploader",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "description": "Uploader service for angular.js",
   "main": "src/netgenes-angular-uploader.js",
   "scripts": {
