@@ -1,6 +1,6 @@
 {
   "name": "netgenes-angular-uploader",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Uploader service for angular.js",
   "main": "src/netgenes-angular-uploader.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git://github.com/jatzek/netgenes-angular-uploader.git"
+    "url": "https://github.com/jatzek/netgenes-angular-uploader.git"
   },
   "keywords": [
     "angular",
