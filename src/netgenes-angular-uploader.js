@@ -6,7 +6,75 @@
 
     angular
         .module('netgenes.$ngUploader',[])
-        .service('$ngUploader', function () {
+        .factory('$ngFileChooser', function () {
+
+            function NgFileChooser( ) { }
+
+            NgFileChooser.prototype = {
+
+                defaults : {
+
+                    multiple : false,
+                    accept : null,
+                    callback : angular.noop
+                },
+                open: function ( providedConfig ) {
+
+                    var defaults = this.defaults;
+
+                    return new Promise( function ( resolve ) {
+
+                        var fileInput,
+                            config,
+                            clickEvent,
+                            changeHandler,
+                            promise;
+
+                        changeHandler = function ( changeEvent ) {
+
+                            var files;
+
+                            files = changeEvent.target.files;
+
+                            config.callback( files );
+
+                            document.body.removeChild( fileInput );
+
+                            resolve( files );
+
+                        }.bind( this );
+
+
+                        config = Object.assign( {} , defaults , providedConfig );
+
+                        fileInput = document.createElement('input');
+                        fileInput.setAttribute('type', 'file');
+                        fileInput.addEventListener('change', changeHandler );
+
+                        if ( config.multiple ) {
+
+                            fileInput.setAttribute('multiple', true );
+                        }
+
+                        if ( config.accept ) {
+
+                            fileInput.setAttribute('accept', config.accept );
+                        }
+
+                        clickEvent = document.createEvent('MouseEvents');
+                        clickEvent.initEvent('click', true, true );
+                        clickEvent.synthetic = true;
+
+                        document.body.appendChild( fileInput );
+
+                        fileInput.dispatchEvent( clickEvent );
+                    });
+                }
+            };
+
+            return new NgFileChooser();
+        })
+        .service('$ngUploader', function ( $ngFileChooser ) {
 
             function Upload( conf ) {
 
@@ -39,14 +107,12 @@
 
                 var successCallback = function ( event ) {
 
-                    document.body.removeChild( handlerInput );
                     this.config.onSuccess( event );
 
                 }.bind( this );
 
                 var errorCallback = function ( event ) {
 
-                    document.body.removeChild( handlerInput );
                     this.config.onError( event );
 
                 }.bind( this );
@@ -57,21 +123,17 @@
 
                 }.bind( this );
 
-                var changeHandler = function ( changeEvent ) {
 
-                    var files,
-                        xhr,
+
+                var openHandler = function ( files ) {
+
+                    var xhr,
                         formData,
                         additionalData,
                         fileFieldName,
                         responseType,
                         endpointUrl,
                         requestHeaders;
-
-                    if ( 0 === event.target.files.length )
-                        return;
-
-                    files = event.target.files;
 
                     additionalData = this.config.additionalData;
                     fileFieldName = this.config.fileFieldName;
@@ -118,29 +180,12 @@
 
                 }.bind( this );
 
-
-                var handlerInput = document.createElement('input');
-                handlerInput.setAttribute( 'type', 'file' );
-                handlerInput.style.display = 'none';
-                handlerInput.addEventListener('change', changeHandler );
-
-                if ( this.config.acceptFiles ) {
-
-                    handlerInput.setAttribute('accept', this.config.acceptFiles );
-                }
-
-                if ( this.config.multipleFiles ) {
-
-                    handlerInput.setAttribute('multiple', true );
-                }
-
-                document.body.appendChild( handlerInput );
-
-                var click = document.createEvent('MouseEvents');
-                click.initEvent('click', true, true );
-                click.synthetic = true;
-
-                handlerInput.dispatchEvent( click );
+                $ngFileChooser
+                    .open( {
+                        accept : this.config.acceptFiles,
+                        multiple : this.config.multipleFiles
+                    })
+                    .then( openHandler );
             }
 
             function NgUploader() { }
